@@ -16,7 +16,7 @@ Resources:
   RESTJavaAPI:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: .
+      CodeUri: ./
       Handler: com.addvance.restapi.StreamLambdaHandler
       Runtime: java11
       Architectures:
@@ -34,6 +34,10 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: any
+      AutoPublishAlias: live
+      DeploymentPreference:
+        # Specifies the deployment configuration
+        Type: CodeDeployDefault.LambdaAllAtOnce
 
   ConfigLambdaPermission:
     Type: "AWS::Lambda::Permission"
