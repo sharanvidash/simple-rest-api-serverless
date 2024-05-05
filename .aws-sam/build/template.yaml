@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'restapi-java
+
+  SAM Template for rest-api-java
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Resources:
+  RESTJavaAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RESTJavaAPI
+      Handler: com.addvance.restapi.StreamLambdaHandler
+      Runtime: java11
+      Architectures:
+      - x86_64
+      Policies: AWSLambdaBasicExecutionRole
+      Timeout: 60
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        Service:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+    Metadata:
+      SamResourceId: RESTJavaAPI
+  ConfigLambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+    - RESTJavaAPI
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: RESTJavaAPI
+      Principal: apigateway.amazonaws.com
